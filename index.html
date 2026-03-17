@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.4">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="ko"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Glass Donut&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>* { margin: 0; padding: 0; box-sizing: border-box; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>body { background: #F0F0F0; overflow: hidden; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>canvas { display: block; width: 100vw; height: 100vh; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p1">&lt;script type="importmap"&gt;</p>
+<p class="p1">{</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"imports": {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"three": "https://unpkg.com/three@0.160.0/build/three.module.js",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>"three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1">}</p>
+<p class="p1">&lt;/script&gt;</p>
+<p class="p1">&lt;script type="module"&gt;</p>
+<p class="p1">import * as THREE from "three"</p>
+<p class="p1">import { OrbitControls } from "three/addons/controls/OrbitControls.js"</p>
+<p class="p1">import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"</p>
+<p class="p1">import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js"</p>
+<p class="p2"><br></p>
+<p class="p1">const MODEL_URL = "https://raw.githubusercontent.com/kmk637791-ui/my-pool/main/Glass%20Donut.glb"</p>
+<p class="p2"><br></p>
+<p class="p1">// ── Scene ──────────────────────────────────────────────</p>
+<p class="p1">const scene = new THREE.Scene()</p>
+<p class="p1">scene.background = new THREE.Color(0xF0F0F0)</p>
+<p class="p2"><br></p>
+<p class="p1">// ── Camera ─────────────────────────────────────────────</p>
+<p class="p1">const camera = new THREE.PerspectiveCamera(</p>
+<p class="p1"><span class="Apple-converted-space">  </span>45,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>window.innerWidth / window.innerHeight,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>0.01,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>1000</p>
+<p class="p1">)</p>
+<p class="p1">camera.position.set(0, 1.5, 5)</p>
+<p class="p2"><br></p>
+<p class="p1">// ── Renderer ───────────────────────────────────────────</p>
+<p class="p1">const renderer = new THREE.WebGLRenderer({ antialias: true })</p>
+<p class="p1">renderer.setPixelRatio(window.devicePixelRatio)</p>
+<p class="p1">renderer.setSize(window.innerWidth, window.innerHeight)</p>
+<p class="p1">renderer.shadowMap.enabled = true</p>
+<p class="p1">renderer.shadowMap.type = THREE.PCFSoftShadowMap</p>
+<p class="p1">renderer.outputColorSpace = THREE.SRGBColorSpace</p>
+<p class="p1">renderer.toneMapping = THREE.ACESFilmicToneMapping</p>
+<p class="p1">renderer.toneMappingExposure = 1.2</p>
+<p class="p1">document.body.appendChild(renderer.domElement)</p>
+<p class="p2"><br></p>
+<p class="p1">// ── 조명 ───────────────────────────────────────────────</p>
+<p class="p1">const ambient = new THREE.AmbientLight(0xffffff, 0.5)</p>
+<p class="p1">scene.add(ambient)</p>
+<p class="p2"><br></p>
+<p class="p1">const dir1 = new THREE.DirectionalLight(0xffffff, 2.0)</p>
+<p class="p1">dir1.position.set(5, 5, 5)</p>
+<p class="p1">dir1.castShadow = true</p>
+<p class="p1">scene.add(dir1)</p>
+<p class="p2"><br></p>
+<p class="p1">const dir2 = new THREE.DirectionalLight(0x8888ff, 1.0)</p>
+<p class="p1">dir2.position.set(-5, -2, -3)</p>
+<p class="p1">scene.add(dir2)</p>
+<p class="p2"><br></p>
+<p class="p1">const dir3 = new THREE.DirectionalLight(0xffeecc, 0.8)</p>
+<p class="p1">dir3.position.set(0, 5, -5)</p>
+<p class="p1">scene.add(dir3)</p>
+<p class="p2"><br></p>
+<p class="p1">// ── OrbitControls ──────────────────────────────────────</p>
+<p class="p1">const controls = new OrbitControls(camera, renderer.domElement)</p>
+<p class="p1">controls.enableDamping = true</p>
+<p class="p1">controls.dampingFactor = 0.08</p>
+<p class="p1">controls.enableZoom = true</p>
+<p class="p1">controls.enablePan = false</p>
+<p class="p2"><br></p>
+<p class="p1">// ── 유리 재질 ──────────────────────────────────────────</p>
+<p class="p1">const glassMaterial = new THREE.MeshPhysicalMaterial({</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: new THREE.Color("#aaddff"),</p>
+<p class="p1"><span class="Apple-converted-space">  </span>roughness: 0.05,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>metalness: 0.1,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>transparent: true,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>opacity: 0.25,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>side: THREE.DoubleSide,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>envMapIntensity: 1.0,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>reflectivity: 1.0,</p>
+<p class="p1">})</p>
+<p class="p2"><br></p>
+<p class="p1">// ── GLB 로드 ───────────────────────────────────────────</p>
+<p class="p1">const dracoLoader = new DRACOLoader()</p>
+<p class="p1">dracoLoader.setDecoderPath(</p>
+<p class="p1"><span class="Apple-converted-space">  </span>"https://www.gstatic.com/draco/versioned/decoders/1.5.6/"</p>
+<p class="p1">)</p>
+<p class="p2"><br></p>
+<p class="p1">const loader = new GLTFLoader()</p>
+<p class="p1">loader.setDRACOLoader(dracoLoader)</p>
+<p class="p2"><br></p>
+<p class="p1">loader.load(</p>
+<p class="p1"><span class="Apple-converted-space">  </span>MODEL_URL,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>(gltf) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const model = gltf.scene</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const box = new THREE.Box3().setFromObject(model)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const center = box.getCenter(new THREE.Vector3())</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const size = box.getSize(new THREE.Vector3())</p>
+<p class="p1"><span class="Apple-converted-space">    </span>model.position.sub(center)</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const maxDim = Math.max(size.x, size.y, size.z)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>camera.position.set(0, maxDim * 0.5, maxDim * 2)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>controls.minDistance = maxDim * 0.5</p>
+<p class="p1"><span class="Apple-converted-space">    </span>controls.maxDistance = maxDim * 6</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>model.traverse((child) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (child.isMesh) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>child.material = glassMaterial</p>
+<p class="p1"><span class="Apple-converted-space">        </span>child.castShadow = true</p>
+<p class="p1"><span class="Apple-converted-space">        </span>child.receiveShadow = true</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>})</p>
+<p class="p1"><span class="Apple-converted-space">    </span>scene.add(model)</p>
+<p class="p1"><span class="Apple-converted-space">  </span>},</p>
+<p class="p1"><span class="Apple-converted-space">  </span>undefined,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>(err) =&gt; console.error("GLB 로드 실패:", err)</p>
+<p class="p1">)</p>
+<p class="p2"><br></p>
+<p class="p1">// ── 리사이즈 대응 ───────────────────────────────────────</p>
+<p class="p1">window.addEventListener("resize", () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>camera.aspect = window.innerWidth / window.innerHeight</p>
+<p class="p1"><span class="Apple-converted-space">  </span>camera.updateProjectionMatrix()</p>
+<p class="p1"><span class="Apple-converted-space">  </span>renderer.setSize(window.innerWidth, window.innerHeight)</p>
+<p class="p1">})</p>
+<p class="p2"><br></p>
+<p class="p1">// ── 애니메이션 루프 ─────────────────────────────────────</p>
+<p class="p1">function animate() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>requestAnimationFrame(animate)</p>
+<p class="p1"><span class="Apple-converted-space">  </span>controls.update()</p>
+<p class="p1"><span class="Apple-converted-space">  </span>renderer.render(scene, camera)</p>
+<p class="p1">}</p>
+<p class="p1">animate()</p>
+<p class="p1">&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+<p class="p1">```</p>
+</body>
+</html>
